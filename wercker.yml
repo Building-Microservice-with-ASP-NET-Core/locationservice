@@ -61,6 +61,6 @@ deploy:
         username: $USERNAME
         password: $PASSWORD
         tag: nodb
-        repository: dotnetcoreserviceszh/locationservice
+        repository: zhixin9001/aspnetcoremicroservice_locationservice
         registry: https://registry.hub.docker.com
         entrypoint: "/pipeline/source/app/docker_entrypoint.sh"
