@@ -1,6 +1,6 @@
-box: mcr.microsoft.com/dotnet/core/sdk:2.2.300
 no-response-timeout: 10
 build:
+  box: mcr.microsoft.com/dotnet/core/sdk:3.1
   steps: 
 # compile  
     - script:
@@ -54,6 +54,7 @@ build:
           cp appsettings*json $WERCKER_OUTPUT_DIR/app/publish
           mkdir -p $WERCKER_OUTPUT_DIR/app/publish/app/tmp
 deploy:
+  box: mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim
   steps:
     - internal/docker-push:
         cwd: $WERCKER_OUTPUT_DIR/app

@@ -4,42 +4,30 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StatlerWaldorfCorp.LocationService.Models;
 using StatlerWaldorfCorp.LocationService.Persistence;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace StatlerWaldorfCorp.LocationService {
     public class Startup
     {
-        public static string[] Args {get; set;} = new string[] {};
-        private ILogger logger;
-        private ILoggerFactory loggerFactory;
-
-        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            var builder = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .AddCommandLine(Startup.Args);               
-
-            Configuration = builder.Build();
-
-            this.loggerFactory = loggerFactory;
-            this.loggerFactory.AddConsole(LogLevel.Information);
-            this.loggerFactory.AddDebug();
-
-            this.logger = this.loggerFactory.CreateLogger("Startup");
-        }
-
-        public IConfigurationRoot Configuration { get; }
-
         public void ConfigureServices(IServiceCollection services)
         {           
+            services.AddControllers();
             services.AddScoped<ILocationRecordRepository, InMemoryLocationRecordRepository>();
-            
-            services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app,IWebHostEnvironment env)
         {
-            app.UseMvc();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseRouting();
+            app.UseEndpoints(endpoint =>
+            {
+                endpoint.MapControllers();
+            });
         }
     }
 }
