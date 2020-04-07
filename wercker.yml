@@ -1,4 +1,4 @@
-box: mcr.microsoft.com/dotnet/core/sdk:2.2.300
+box: mcr.microsoft.com/dotnet/core/sdk:3.1
 services:
    - id: postgres
      env:

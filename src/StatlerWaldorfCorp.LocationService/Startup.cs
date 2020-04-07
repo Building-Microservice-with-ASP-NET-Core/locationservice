@@ -9,61 +9,75 @@ using System;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Microsoft.Extensions.Hosting;
 
-namespace StatlerWaldorfCorp.LocationService {
+namespace StatlerWaldorfCorp.LocationService
+{
     public class Startup
     {
-        public static string[] Args {get; set;} = new string[] {};
         private ILogger logger;
         private ILoggerFactory loggerFactory;
 
-        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration)
         {
-            Configuration = InitializeConfiguration();
+            Configuration = configuration;
+            loggerFactory = LoggerFactory.Create(builder =>
+             {
+                 builder.AddConsole().AddDebug();
+             });
 
-            this.loggerFactory = loggerFactory;
-            this.loggerFactory.AddConsole(LogLevel.Information);
-            this.loggerFactory.AddDebug();
-
-            this.logger = this.loggerFactory.CreateLogger("Startup");
+            logger = loggerFactory.CreateLogger<Startup>();
         }
-
-        internal static IConfigurationRoot InitializeConfiguration() 
-        {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional:true)
-                .AddEnvironmentVariables()
-                .AddCommandLine(Startup.Args);     
-            return builder.Build();   
-        }
-
-        public static IConfigurationRoot Configuration { get; set; }
+        public static IConfiguration Configuration { get; set; }
 
         public void ConfigureServices(IServiceCollection services)
-        {                                    
+        {
             //var transient = Boolean.Parse(Configuration.GetSection("transient").Value);
             var transient = true;
-            if (Configuration.GetSection("transient") != null) {
+            if (Configuration.GetSection("transient") != null)
+            {
                 transient = Boolean.Parse(Configuration.GetSection("transient").Value);
             }
-            if (transient) {
+            if (transient)
+            {
                 logger.LogInformation("Using transient location record repository.");
                 services.AddScoped<ILocationRecordRepository, InMemoryLocationRecordRepository>();
-            } else {                
-                var connectionString = Configuration.GetSection("postgres:cstr").Value;                        
+            }
+            else
+            {
+                var connectionString = Configuration.GetSection("postgres:cstr").Value;
                 services.AddEntityFrameworkNpgsql().AddDbContext<LocationDbContext>(options =>
                     options.UseNpgsql(connectionString));
                 logger.LogInformation("Using '{0}' for DB connection string.", connectionString);
                 services.AddScoped<ILocationRecordRepository, LocationRecordRepository>();
             }
-            
-            services.AddMvc();
+
+            services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMvc();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseRouting();
+            app.UseEndpoints(endpoint =>
+            {
+                endpoint.MapControllers();
+            });
+        }
+
+        public static string[] Args { get; set; } = new string[] { };
+        internal static IConfigurationRoot InitializeConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddEnvironmentVariables()
+                .AddCommandLine(Startup.Args);
+            return builder.Build();
         }
     }
 }
