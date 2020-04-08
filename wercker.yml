@@ -21,21 +21,21 @@ build:
           dotnet build  
 
 # unit tests          
-    - script:
-        name: test-restore
-        cwd: test/StatlerWaldorfCorp.LocationService.Tests
-        code: |
-           dotnet restore
-    - script:
-        name: test-build
-        cwd: test/StatlerWaldorfCorp.LocationService.Tests
-        code: |
-          dotnet build
-    - script:
-        name: test-run
-        cwd: test/StatlerWaldorfCorp.LocationService.Tests
-        code: |
-          dotnet test
+#   - script:
+#       name: test-restore
+#       cwd: test/StatlerWaldorfCorp.LocationService.Tests
+#       code: |
+#          dotnet restore
+#   - script:
+#       name: test-build
+#       cwd: test/StatlerWaldorfCorp.LocationService.Tests
+#       code: |
+#         dotnet build
+#   - script:
+#       name: test-run
+#       cwd: test/StatlerWaldorfCorp.LocationService.Tests
+#       code: |
+#         dotnet test
 
 # integration tests
     - script:
