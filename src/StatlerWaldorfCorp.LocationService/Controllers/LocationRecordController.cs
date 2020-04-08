@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using StatlerWaldorfCorp.LocationService.Models;
 
 namespace StatlerWaldorfCorp.LocationService.Controllers {
@@ -8,9 +9,10 @@ namespace StatlerWaldorfCorp.LocationService.Controllers {
     public class LocationRecordController : Controller {
 
         private ILocationRecordRepository locationRepository;
-
-        public LocationRecordController(ILocationRecordRepository repository) {
+        //private ILogger<LocationRecordController> logger;
+        public LocationRecordController(ILocationRecordRepository repository/*,ILogger<LocationRecordController> logger*/) {
             this.locationRepository = repository;
+            //this.logger = logger;
         }
 
         [HttpPost]
@@ -20,7 +22,8 @@ namespace StatlerWaldorfCorp.LocationService.Controllers {
         }
 
         [HttpGet]
-        public IActionResult GetLocationsForMember(Guid memberId) {            
+        public IActionResult GetLocationsForMember(Guid memberId) {
+            //logger.LogInformation("Get===");
             return this.Ok(locationRepository.AllForMember(memberId));
         }
 

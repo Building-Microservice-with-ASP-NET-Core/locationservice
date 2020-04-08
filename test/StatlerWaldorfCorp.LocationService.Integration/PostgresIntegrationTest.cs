@@ -19,15 +19,15 @@ namespace StatlerWaldorfCorp.LocationService.Integration
 
         public PostgresIntegrationTest()
         {
-			config = new ConfigurationBuilder()
-                .SetBasePath(System.IO.Directory.GetCurrentDirectory())                
-                .AddEnvironmentVariables()                
+            config = new ConfigurationBuilder()
+                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables()
                 .Build();
 
             var connectionString = config.GetSection("postgres:cstr").Value;
             var optionsBuilder = new DbContextOptionsBuilder<LocationDbContext>();
             optionsBuilder.UseNpgsql(connectionString);
-            this.context = new LocationDbContext(optionsBuilder.Options);                
+            this.context = new LocationDbContext(optionsBuilder.Options);
         }
 
         [Fact]
@@ -35,8 +35,13 @@ namespace StatlerWaldorfCorp.LocationService.Integration
         {
             LocationRecordRepository repository = new LocationRecordRepository(context);
 
-            LocationRecord firstRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 1,
-                MemberID = Guid.NewGuid(), Latitude = 12.3f }; 
+            LocationRecord firstRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 1,
+                MemberID = Guid.NewGuid(),
+                Latitude = 12.3f
+            };
             repository.Add(firstRecord);
 
             LocationRecord targetRecord = repository.Get(firstRecord.MemberID, firstRecord.ID);
@@ -45,7 +50,7 @@ namespace StatlerWaldorfCorp.LocationService.Integration
             Assert.Equal(firstRecord.Timestamp, targetRecord.Timestamp);
             Assert.Equal(firstRecord.MemberID, targetRecord.MemberID);
             Assert.Equal(firstRecord.ID, targetRecord.ID);
-            Assert.Equal(firstRecord.Latitude, targetRecord.Latitude);          
+            Assert.Equal(firstRecord.Latitude, targetRecord.Latitude);
         }
 
         [Fact]
@@ -53,8 +58,13 @@ namespace StatlerWaldorfCorp.LocationService.Integration
         {
             LocationRecordRepository repository = new LocationRecordRepository(context);
 
-            LocationRecord firstRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 1,
-                MemberID = Guid.NewGuid(), Latitude = 12.3f }; 
+            LocationRecord firstRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 1,
+                MemberID = Guid.NewGuid(),
+                Latitude = 12.3f
+            };
             repository.Add(firstRecord);
 
             LocationRecord targetRecord = repository.Get(firstRecord.MemberID, firstRecord.ID);
@@ -77,24 +87,34 @@ namespace StatlerWaldorfCorp.LocationService.Integration
         public void ShouldDeleteRecord()
         {
             LocationRecordRepository repository = new LocationRecordRepository(context);
-            Guid memberId = Guid.NewGuid(); 
+            Guid memberId = Guid.NewGuid();
 
-            LocationRecord firstRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 1,
-                MemberID = memberId, Latitude = 12.3f }; 
+            LocationRecord firstRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 1,
+                MemberID = memberId,
+                Latitude = 12.3f
+            };
             repository.Add(firstRecord);
-            LocationRecord secondRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 2,
-                MemberID = memberId, Latitude = 24.4f };
+            LocationRecord secondRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 2,
+                MemberID = memberId,
+                Latitude = 24.4f
+            };
             repository.Add(secondRecord);
-            
+
             int initialCount = repository.AllForMember(memberId).Count();
             repository.Delete(memberId, secondRecord.ID);
             int afterCount = repository.AllForMember(memberId).Count();
-        
+
             LocationRecord target1 = repository.Get(firstRecord.MemberID, firstRecord.ID);
             LocationRecord target2 = repository.Get(firstRecord.MemberID, secondRecord.ID);
-            
-            Assert.Equal(initialCount -1, afterCount);
-            Assert.Equal(target1.ID, firstRecord.ID);            
+
+            Assert.Equal(initialCount - 1, afterCount);
+            Assert.Equal(target1.ID, firstRecord.ID);
             Assert.NotNull(target1);
             Assert.Null(target2);
         }
@@ -103,23 +123,33 @@ namespace StatlerWaldorfCorp.LocationService.Integration
         public void ShouldGetAllForMember()
         {
             LocationRecordRepository repository = new LocationRecordRepository(context);
-            Guid memberId = Guid.NewGuid(); 
+            Guid memberId = Guid.NewGuid();
 
             int initialCount = repository.AllForMember(memberId).Count();
 
-            LocationRecord firstRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 1,
-                MemberID = memberId, Latitude = 12.3f }; 
+            LocationRecord firstRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 1,
+                MemberID = memberId,
+                Latitude = 12.3f
+            };
             repository.Add(firstRecord);
-            LocationRecord secondRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 2,
-                MemberID = memberId, Latitude = 24.4f };
+            LocationRecord secondRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 2,
+                MemberID = memberId,
+                Latitude = 24.4f
+            };
             repository.Add(secondRecord);
 
             ICollection<LocationRecord> records = repository.AllForMember(memberId);
-            int afterCount = records.Count();        
+            int afterCount = records.Count();
 
             Assert.Equal(initialCount + 2, afterCount);
             Assert.NotNull(records.FirstOrDefault(r => r.ID == firstRecord.ID));
-            Assert.NotNull(records.FirstOrDefault(r => r.ID == secondRecord.ID));            
+            Assert.NotNull(records.FirstOrDefault(r => r.ID == secondRecord.ID));
         }
 
         [Fact]
@@ -128,11 +158,21 @@ namespace StatlerWaldorfCorp.LocationService.Integration
             LocationRecordRepository repository = new LocationRecordRepository(context);
             Guid memberId = Guid.NewGuid();
 
-            LocationRecord firstRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 1,
-                MemberID = memberId, Latitude = 12.3f }; 
+            LocationRecord firstRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 1,
+                MemberID = memberId,
+                Latitude = 12.3f
+            };
             repository.Add(firstRecord);
-            LocationRecord secondRecord = new LocationRecord(){ ID = Guid.NewGuid(), Timestamp = 2,
-                MemberID = memberId, Latitude = 24.4f };
+            LocationRecord secondRecord = new LocationRecord()
+            {
+                ID = Guid.NewGuid(),
+                Timestamp = 2,
+                MemberID = memberId,
+                Latitude = 24.4f
+            };
             repository.Add(secondRecord);
 
             LocationRecord latest = repository.GetLatestForMember(memberId);
