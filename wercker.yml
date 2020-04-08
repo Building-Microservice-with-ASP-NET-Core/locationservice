@@ -47,6 +47,10 @@ build:
            export POSTGRES__CSTR="$POSTGRES__CSTR;Username=integrator;Password=inteword;"
            export POSTGRES__CSTR="$POSTGRES__CSTR;Port=$POSTGRES_PORT_5432_TCP_PORT;Database=locationservice"
            echo ===
+           cat << \EOF >> ~/.bash_profile
+            # Add .NET Core SDK tools
+            export PATH="$PATH:/root/.dotnet/tools"
+            EOF
            dotnet tool install --global dotnet-ef
            dotnet ef database update
     - script:
