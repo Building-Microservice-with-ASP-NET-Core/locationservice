@@ -10,3 +10,6 @@
 * TRANSIENT (boolean 类型)
 * POSTGRES_CSTR (postgres 连接字符串)
 
+docker run -p 5432:5432 --name some-postgres -e POSTGRES_PASSWORD=inteword -e POSTGRES_USER=integrator -e POSTGRES_DB=locationservice postgres
+
+docker run -it --rm --link some-postgres:postgres postgres psql -h postgres -U integrator -d locationservice
