@@ -46,6 +46,8 @@ build:
            export POSTGRES__CSTR="Host=$POSTGRES_PORT_5432_TCP_ADDR"
            export POSTGRES__CSTR="$POSTGRES__CSTR;Username=integrator;Password=inteword;"
            export POSTGRES__CSTR="$POSTGRES__CSTR;Port=$POSTGRES_PORT_5432_TCP_PORT;Database=locationservice"
+           echo ===
+           dotnet tool install --global dotnet-ef
            dotnet ef database update
     - script:
         name: integration-restore
